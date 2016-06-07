@@ -8,6 +8,10 @@ import (
 	"net/http"
 )
 
+var (
+	AllowCors = true
+)
+
 type UploadHandler struct {
 	filepool.UploadFileRequire
 	Category string
@@ -31,6 +35,25 @@ func (e *ErrorResp) ToJson() (s string) {
 }
 
 func (h *UploadHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+
+	//CORS
+	if AllowCors == true {
+		origin := req.Header.Get("Origin")
+
+		if len(origin) > 0 {
+			rw.Header().Add("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			rw.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+		}
+
+		// options
+		if req.Method == "OPTIONS" {
+			//rw.Header().Add("Access-Control-Allow-Methods", "ACL, CANCELUPLOAD, CHECKIN, CHECKOUT, COPY, DELETE, GET, HEAD, LOCK, MKCALENDAR, MKCOL, MOVE, OPTIONS, POST, PROPFIND, PROPPATCH, PUT, REPORT, SEARCH, UNCHECKOUT, UNLOCK, UPDATE, VERSION-CONTROL")
+			rw.Header().Add("Access-Control-Allow-Methods", "DELETE, GET, HEAD, OPTIONS, POST, PUT, QUERY, UNLOCK, UPDATE")
+			return
+		}
+	}
+
 	var (
 		uploadRequire = &filepool.UploadFileRequire{
 			MaxSize:      h.MaxSize,
