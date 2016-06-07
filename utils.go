@@ -27,11 +27,10 @@ func DetectImageType(f multipart.File) (t string, err error) {
 
 func IsImageType(t string) (err error) {
 	switch t {
-	case "image/jpeg":
-		err = nil
-	case "image/png":
+	case "image/jpeg", "image/png", "image/gif", "image/bmp":
 		err = nil
 	default:
+		println(t)
 		err = ErrImageType
 	}
 	return

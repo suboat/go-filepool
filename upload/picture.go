@@ -8,6 +8,7 @@ import (
 	"github.com/suboat/go-filepool/utils"
 	"github.com/suboat/sorm"
 	"github.com/suboat/sorm/log"
+	_ "golang.org/x/image/bmp"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
