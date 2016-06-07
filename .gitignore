@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+.idea
+example/main*
+example/test.png
+example/upload
