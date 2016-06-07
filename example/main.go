@@ -12,7 +12,8 @@ import (
 func main() {
 
 	// log
-	log.SetLevel(logrus.DebugLevel)
+	//log.SetLevel(logrus.DebugLevel)
+	log.SetLevel(logrus.InfoLevel)
 
 	var (
 		h       = &upload.UploadHandler{}
@@ -26,10 +27,22 @@ func main() {
 	http.Handle("/upload", h)
 
 	// 下载
-	log.Debug("DownloadDir ", config.DownloadDir)
+	log.Info("DownloadDir ", config.DownloadDir)
 	http.Handle("/download/", config.DirNotList(http.StripPrefix("/download/", http.FileServer(http.Dir(config.DownloadDir)))))
 
+	// 检查缺失的缩略图
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error(err)
+			}
+		}()
+		if err := upload.ToolFixThumbnail(); err != nil {
+			log.Error(err)
+		}
+	}()
+
 	// run
-	log.Debug("ListenAndServe ", address)
+	log.Info("ListenAndServe ", address)
 	http.ListenAndServe(address, nil)
 }

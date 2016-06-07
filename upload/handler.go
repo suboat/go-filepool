@@ -55,7 +55,7 @@ func (h *UploadHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// 解析上传文件
 	if file, resp.Error = filepool.UploadFileOne(rw, req, uploadRequire); resp.Error != nil {
 		// err
-		log.Error(resp.Error)
+		log.Error("[ERROR] ", req.RemoteAddr, " ? ", resp.Error)
 		return
 	}
 	defer file.Close()
@@ -77,6 +77,8 @@ func (h *UploadHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	// 返回结果
 	fmt.Fprint(rw, p.ToJson())
+	// 打印来源ip
+	log.Info("[UPLOAD] ", req.RemoteAddr, " -> ", p.FetchToken, " (", p.Size/1024, "KB)")
 
 	return
 }
