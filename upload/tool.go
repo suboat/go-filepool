@@ -9,6 +9,7 @@ import (
 	"path"
 	"path/filepath"
 
+	_ "golang.org/x/image/bmp"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
@@ -42,7 +43,7 @@ func toolFixThumbnail(p string, fi os.FileInfo, er error) (err error) {
 	fp, _ := os.Open(p)
 	defer fp.Close()
 	if er = ToolThumbnail(fp, thumbPath); er != nil {
-		log.Error(er)
+		log.Error("[FAIL] ", p, " ", er)
 		return
 	}
 	log.Info("[FIX THUMB] ", thumbPath)

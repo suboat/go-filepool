@@ -22,10 +22,12 @@ import (
 
 // 储存目录
 var (
-	StoreDir              string // 储存目录
-	StoreDirThumbnail     string // 缩略图储存目录
-	ResizeThumbnailWidth  uint   // 缩略图宽度
-	ResizeThumbnailHeight uint   // 缩略图高度
+	StoreDir              string        // 储存目录
+	StoreDirThumbnail     string        // 缩略图储存目录
+	ResizeThumbnailWidth  uint          // 缩略图宽度
+	ResizeThumbnailHeight uint          // 缩略图高度
+	SourceMaxWidth        uint   = 2560 // 图片素材最大宽度
+	SourceMaxHeight       uint   = 2560 // 图片素材最大高度
 )
 
 type Picture struct {
@@ -162,6 +164,14 @@ func (pic *Picture) SaveFileAndThumbnail(f multipart.File) (err error) {
 	if _, err = f.Seek(0, 0); err != nil {
 		log.Error(err)
 		return
+	}
+	// ** 限制图片最大尺寸
+	if SourceMaxWidth > 0 || SourceMaxHeight > 0 {
+		img = resize.Thumbnail(SourceMaxWidth, SourceMaxHeight, img, resize.NearestNeighbor)
+		if f, pic.Sha1, err = utils.ImageToiMutiFile(img, img_s); err != nil {
+			log.Error(err)
+			return
+		}
 	}
 	// 解析图片config信息,宽高
 	if img_c, _, err = image.DecodeConfig(f); err != nil {

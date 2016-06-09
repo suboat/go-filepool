@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"golang.org/x/image/bmp"
 	"image"
 	"image/gif"
 	"image/jpeg"
@@ -27,6 +28,8 @@ func ImageToiMutiFile(img image.Image, t string) (f multipart.File, hash string,
 		err = png.Encode(buf, img)
 	case "gif":
 		err = gif.Encode(buf, img, nil)
+	case "bmp":
+		err = bmp.Encode(buf, img)
 	}
 	if err != nil {
 		return
