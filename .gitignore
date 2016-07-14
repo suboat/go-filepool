@@ -27,3 +27,4 @@ _testmain.go
 example/main*
 example/test.png
 example/upload
+example/config.ini
