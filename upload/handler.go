@@ -43,7 +43,7 @@ func (h *UploadHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		if len(origin) > 0 {
 			rw.Header().Add("Access-Control-Allow-Origin", origin)
 			rw.Header().Set("Access-Control-Allow-Credentials", "true")
-			rw.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+			rw.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, X_Requested_With, Content-Type, Accept, Authorization")
 		}
 
 		// options
