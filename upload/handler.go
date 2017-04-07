@@ -49,7 +49,7 @@ func (h *UploadHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		// options
 		if req.Method == "OPTIONS" {
 			//rw.Header().Add("Access-Control-Allow-Methods", "ACL, CANCELUPLOAD, CHECKIN, CHECKOUT, COPY, DELETE, GET, HEAD, LOCK, MKCALENDAR, MKCOL, MOVE, OPTIONS, POST, PROPFIND, PROPPATCH, PUT, REPORT, SEARCH, UNCHECKOUT, UNLOCK, UPDATE, VERSION-CONTROL")
-			rw.Header().Add("Access-Control-Allow-Methods", "DELETE, GET, HEAD, OPTIONS, POST, PUT, QUERY, UNLOCK, UPDATE")
+			rw.Header().Add("Access-Control-Allow-Methods", "DELETE, GET, HEAD, OPTIONS, POST, PUT, QUERY, UNLOCK, UPDATE, TRACE")
 			return
 		}
 	}
@@ -99,7 +99,31 @@ func (h *UploadHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	//}
 
 	// 返回结果
-	fmt.Fprint(rw, p.ToJson())
+	useNewFmt := false
+	if h.FmtHandler != nil {
+		if _newResp, _err := h.FmtHandler(p); _err == nil {
+			if _newResp != nil {
+				println("aaaa")
+				// 支持的格式
+				switch res := _newResp.(type) {
+				case string:
+					useNewFmt = true
+					fmt.Fprint(rw, res)
+					break
+				case []byte:
+					useNewFmt = true
+					rw.Write(res)
+					break
+				default:
+					break
+				}
+			}
+		}
+	}
+	if useNewFmt == false {
+		fmt.Fprint(rw, p.ToJson())
+	}
+
 	// 打印来源ip
 	log.Info("[UPLOAD] ", req.RemoteAddr, " -> ", p.FetchToken, " (", p.Size/1024, "KB)")
 

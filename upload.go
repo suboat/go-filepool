@@ -1,20 +1,24 @@
 package filepool
 
 import (
-	"fmt"
 	"github.com/suboat/go-filepool/utils"
 	"github.com/suboat/sorm/log"
+
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path"
 )
 
+//
 type UploadFileRequire struct {
 	MaxSize      int64  // 上传文件大小限制
 	FormName     string // 表格中储存file的字段名
 	RequireImage bool   // 是否要求图片类型
 	Rename       string // 将文件名视为
+	// 更改返回格式
+	FmtHandler func(resp interface{}) (newResp interface{}, err error)
 }
 
 // 获取到的文件
@@ -26,6 +30,7 @@ type UploadFileMode struct {
 	ContentType string         // 文件类型
 }
 
+//
 func (f *UploadFileMode) Close() {
 	if f.File != nil {
 		f.File.Close()
@@ -42,6 +47,7 @@ type checkStat interface {
 	Stat() (os.FileInfo, error)
 }
 
+// 上传一个文件
 func UploadFileOne(rw http.ResponseWriter, req *http.Request, meta *UploadFileRequire) (*UploadFileMode, error) {
 	var (
 		file   multipart.File
