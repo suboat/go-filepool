@@ -27,6 +27,6 @@ func init() {
 func Init() {
 	BaseDir, _ = filepath.Abs(BaseDir)                                         // 绝对路径
 	DownloadDir = path.Join(BaseDir, "upload")                                 // 下载目录
-	UploadPicStore = path.Join(BaseDir, "upload", "pictrue")                   // 上传图片保存的正式目录
-	UploadPicStoreThumbnail = path.Join(BaseDir, "upload", "pictruethumbnail") // 上传图片保存的缩略图目录
+	UploadPicStore = path.Join(BaseDir, "upload", "origin")                    // 上传图片保存的正式目录, 保存原始图片
+	UploadPicStoreThumbnail = path.Join(BaseDir, "upload", "thumbnail")        // 上传图片保存的缩略图目录
 }
